@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escala de Serviço — Adoração (Edição Corrigida)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #0a051b;
+            --bg-card: #140d34;
+            --purple-neon: #8a2be2;
+            --magenta-neon: #ff007f;
+            --cyan-neon: #00ffff;
+            --yellow-neon: #ffea00;
+            --texto-puro: #ffffff;
+            --texto-mutado: #6e648e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-puro);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 127, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 40%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1150px;
+            background: linear-gradient(135deg, var(--bg-card) 0%, #1a0f44 100%);
+            border: 2px solid var(--purple-neon);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.3), inset 0 0 15px rgba(255, 0, 127, 0.1);
+            position: relative;
+            animation: fadeIn 1s ease-out;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--texto-puro), var(--magenta-neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--cyan-neon);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: transparent;
+            border: 2px solid var(--cyan-neon);
+            color: var(--cyan-neon);
+            font-family: 'Orbitron', sans-serif;
+            padding: 0.6rem 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-edit:hover {
+            background: var(--cyan-neon);
+            color: var(--bg-principal);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .btn-edit.saving { border-color: var(--magenta-neon); color: var(--magenta-neon); }
+        .btn-edit.saving:hover { background: var(--magenta-neon); color: var(--texto-puro); box-shadow: 0 0 20px rgba(255, 0, 127, 0.4); }
+
+        /* Estrutura Grid */
+        .grid-header {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 2fr 2fr 2fr;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: rgba(138, 43, 226, 0.2);
+            border-radius: 8px;
+            border-left: 4px solid var(--magenta-neon);
+        }
+
+        .grid-header div {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            color: var(--magenta-neon);
+            letter-spacing: 1px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr 2fr 2fr 2fr;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .grid-row:hover {
+            transform: scale(1.01) translateX(5px);
+            background: rgba(138, 43, 226, 0.08);
+            border-color: var(--purple-neon);
+        }
+
+        /* Input de Data Customizado - Bloqueado por padrão via CSS */
+        .date-input-cyber {
+            background: linear-gradient(135deg, var(--purple-neon), #4b0082);
+            color: var(--texto-puro);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            padding: 0.4rem 0.6rem;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+            outline: none;
+            width: 140px;
+            text-align: center;
+            pointer-events: none; /* Impede cliques no modo visualização */
+        }
+
+        /* Quando habilitado (Modo Edição) */
+        .editing-mode .date-input-cyber {
+            border: 1px dashed var(--cyan-neon);
+            background: #1a0f44;
+            cursor: pointer;
+            pointer-events: auto; /* Libera totalmente o clique */
+        }
+
+        .date-input-cyber::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.5;
+        }
+
+        /* Tags de Status */
+        .status-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            text-align: center;
+            width: fit-content;
+            display: inline-block;
+        }
+
+        .status-tag.hoje {
+            background: var(--magenta-neon);
+            color: var(--texto-puro);
+            box-shadow: 0 0 15px var(--magenta-neon);
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-tag.futuro {
+            background: rgba(255, 234, 0, 0.1);
+            color: var(--yellow-neon);
+            border: 1px solid var(--yellow-neon);
+        }
+
+        .status-tag.finalizado {
+            background: rgba(110, 100, 142, 0.2);
+            color: var(--texto-mutado);
+            border: 1px solid rgba(110, 100, 142, 0.4);
+        }
+
+        /* Inputs de Texto */
+        .role-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+            color: var(--texto-puro);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.4rem;
+            border-radius: 4px;
+            width: 95%;
+        }
+
+        .editing-mode .role-input:not(:disabled) {
+            border: 1px dashed var(--cyan-neon);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .role-input:focus { outline: none; border-color: var(--magenta-neon) !important; }
+        .role-input:disabled { background: transparent; border: 1px solid transparent; cursor: default; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--magenta-neon); }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px var(--magenta-neon); }
+            100% { transform: scale(1); box-shadow: 0 0 10px var(--magenta-neon); }
+        }
+
+        /* REGRAS PARA MOBILE */
+        @media (max-width: 850px) {
+            .grid-header { display: none; }
+            .grid-row {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+                padding: 1.5rem 1rem;
+                border-left: 4px solid var(--cyan-neon);
+            }
+            .grid-row:hover { transform: none; }
+            .date-mobile-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 0.6rem;
+                margin-bottom: 0.5rem;
+            }
+            .date-input-cyber { width: 160px; font-size: 1rem; }
+            .cell-group { display: flex; flex-direction: column; }
+            .cell-group::before {
+                content: attr(data-label);
+                color: var(--magenta-neon);
+                font-family: 'Orbitron', sans-serif;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                margin-bottom: 0.2rem;
+            }
+            .role-input { width: 100%; padding: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <header>
+            <h1>Escala de Serviço — Adoração</h1>
+            <div class="subtitle">Mês de Junho / 2026</div>
+        </header>
+
+        <div style="text-align: center;">
+            <button class="btn-edit" id="btnEdit" onclick="toggleEdit()">
+                <span id="btnIcon">🔒</span> <span id="btnText">Ativar Edição</span>
+            </button>
+        </div>
+
+        <div class="grid-header">
+            <div>Data de Serviço</div>
+            <div>Status</div>
+            <div>YouTube</div>
+            <div>Stories</div>
+            <div>Câmera Móvel</div>
+        </div>
+
+        <div class="grid-row">
+            <div class="date-mobile-container">
+                <input type="date" class="date-input-cyber" value="2026-06-02" onchange="atualizarStatusEscala()">
+            </div>
+            <div><span class="status-tag">Calculando...</span></div>
+            <div class="cell-group" data-label="YouTube"><input type="text" class="role-input" value="JM" disabled></div>
+            <div class="cell-group" data-label="Stories"><input type="text" class="role-input" value="Evi e Aninha" disabled></div>
+            <div class="cell-group" data-label="Câmera Móvel"><input type="text" class="role-input" value="Bea Santos e Amanda" disabled></div>
+        </div>
+
+        <div class="grid-row">
+            <div class="date-mobile-container">
+                <input type="date" class="date-input-cyber" value="2026-06-09" onchange="atualizarStatusEscala()">
+            </div>
+            <div><span class="status-tag">Calculando...</span></div>
+            <div class="cell-group" data-label="YouTube"><input type="text" class="role-input" value="Maurício" disabled></div>
+            <div class="cell-group" data-label="Stories"><input type="text" class="role-input" value="Marília e Bea Santos" disabled></div>
+            <div class="cell-group" data-label="Câmera Móvel"><input type="text" class="role-input" value="Bia Nóbrega e Jéssica" disabled></div>
+        </div>
+
+        <div class="grid-row">
+            <div class="date-mobile-container">
+                <input type="date" class="date-input-cyber" value="2026-06-16" onchange="atualizarStatusEscala()">
+            </div>
+            <div><span class="status-tag">Calculando...</span></div>
+            <div class="cell-group" data-label="YouTube"><input type="text" class="role-input" value="Bruno" disabled></div>
+            <div class="cell-group" data-label="Stories"><input type="text" class="role-input" value="Evi e Renata" disabled></div>
+            <div class="cell-group" data-label="Câmera Móvel"><input type="text" class="role-input" value="Ítalo e Amanda" disabled></div>
+        </div>
+
+        <div class="grid-row">
+            <div class="date-mobile-container">
+                <input type="date" class="date-input-cyber" value="2026-06-23" onchange="atualizarStatusEscala()">
+            </div>
+            <div><span class="status-tag">Calculando...</span></div>
+            <div class="cell-group" data-label="YouTube"><input type="text" class="role-input" value="JM" disabled></div>
+            <div class="cell-group" data-label="Stories"><input type="text" class="role-input" value="Bea Santos e Bia Nóbrega" disabled></div>
+            <div class="cell-group" data-label="Câmera Móvel"><input type="text" class="role-input" value="Maurício e Aninha" disabled></div>
+        </div>
+
+        <div class="grid-row">
+            <div class="date-mobile-container">
+                <input type="date" class="date-input-cyber" value="2026-06-30" onchange="atualizarStatusEscala()">
+            </div>
+            <div><span class="status-tag">Calculando...</span></div>
+            <div class="cell-group" data-label="YouTube"><input type="text" class="role-input" value="Bruno" disabled></div>
+            <div class="cell-group" data-label="Stories"><input type="text" class="role-input" value="Evi e Jéssica" disabled></div>
+            <div class="cell-group" data-label="Câmera Móvel"><input type="text" class="role-input" value="Amanda e Marília" disabled></div>
+        </div>
+    </div>
+
+    <script>
+        let isEditing = false;
+        const senhaCorreta = "1234"; 
+
+        function atualizarStatusEscala() {
+            const rows = document.querySelectorAll('.grid-row');
+            const hoje = new Date();
+            hoje.setHours(0,0,0,0);
+
+            rows.forEach(row => {
+                const inputData = row.querySelector('.date-input-cyber');
+                const dataString = inputData.value;
+                if (!dataString) return;
+
+                const [ano, mes, dia] = dataString.split('-');
+                const dataEscala = new Date(ano, mes - 1, dia);
+                dataEscala.setHours(0,0,0,0);
+
+                const elementoStatus = row.querySelector('.status-tag');
+                const diferencaTempo = dataEscala - hoje;
+                const diferencaDias = Math.ceil(diferencaTempo / (1000 * 60 * 60 * 24));
+
+                if (diferencaDias === 0) {
+                    elementoStatus.innerText = "🔥 É Hoje!";
+                    elementoStatus.className = "status-tag hoje";
+                } else if (diferencaDias > 0) {
+                    elementoStatus.innerText = `🟡 Faltam ${diferencaDias} dia${diferencaDias > 1 ? 's' : ''}`;
+                    elementoStatus.className = "status-tag futuro";
+                } else {
+                    elementoStatus.innerText = "✅ Finalizado";
+                    elementoStatus.className = "status-tag finalizado";
+                }
+            });
+        }
+
+        window.onload = atualizarStatusEscala;
+
+        function toggleEdit() {
+            const inputsTexto = document.querySelectorAll('.role-input');
+            const btn = document.getElementById('btnEdit');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+            const container = document.getElementById('mainContainer');
+
+            if (!isEditing) {
+                const senhaDigitada = prompt("Digite a senha de acesso para editar:");
+                if (senhaDigitada === senhaCorreta) {
+                    isEditing = true;
+                    container.classList.add('editing-mode');
+                    
+                    // Libera inputs de texto
+                    inputsTexto.forEach(input => input.disabled = false);
+
+                    btnText.innerText = "Salvar Alterações";
+                    btnIcon.innerText = "💾";
+                    btn.classList.add('saving');
+                } else if (senhaDigitada !== null) {
+                    alert("Senha incorreta!");
+                }
+            } else {
+                isEditing = false;
+                container.classList.remove('editing-mode');
+                
+                inputsTexto.forEach(input => input.disabled = true);
+
+                btnText.innerText = "Ativar Edição";
+                btnIcon.innerText = "🔒";
+                btn.classList.remove('saving');
+                
+                // Força recálculo geral
+                atualizarStatusEscala();
+                alert("Alterações salvas e status atualizados!");
+            }
+        }
+    </script>
+</body>
+</html>
